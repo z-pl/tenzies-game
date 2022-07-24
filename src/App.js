@@ -1,7 +1,10 @@
 import "./App.css";
 import Die from "./components/Die";
 import _, { random } from "lodash";
-import React from "react"
+import Confetti from "react-confetti";
+import React from "react";
+
+
 
 function App() {
 
@@ -10,10 +13,6 @@ function App() {
 
   React.useEffect(() => {
     setTenzies( () => {
-      if (checkTenzies()) {
-        console.log("winner winner chicken dinner")
-      }
-
       return checkTenzies()
     })
   }, [dice])
@@ -46,7 +45,7 @@ function App() {
   }
 
   const diceElements = dice.map(({id, value, isHeld}) => {
-    return <Die id = {id} value = {value} isHeld = {isHeld} toggleHold = {holdDice}/>
+    return <Die id = {id} value = {value} isHeld = {isHeld} toggleHold = {holdDice} tenzies = {tenzies}/>
   })
 
   function updateDiceData() {
@@ -73,7 +72,13 @@ function App() {
   }
 
   const handleButtonClick = () => {
-    setDice(updateDiceData());
+    if (tenzies) {
+      setTenzies(false);
+      setDice(radomizeDiceData());
+    }
+    else {
+      setDice(updateDiceData());
+    }
   }
 
 
@@ -81,10 +86,11 @@ function App() {
 
   return (
     <main className="board-container">
+      {tenzies && <Confetti />}
       <div className="dice-container">
         {diceElements}
       </div>
-      <button onClick = {handleButtonClick} className="random-dice-btn">Roll</button>
+      <button onClick = {handleButtonClick} className="random-dice-btn">{tenzies ? "New Game" : "Roll"}</button>
     </main>
   );
 }
